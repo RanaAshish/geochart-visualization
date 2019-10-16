@@ -1,0 +1,11 @@
+.form-group label {
+  padding: 7px;
+}
+
+.form-group .form-control {
+  margin: 0px 7px;
+}
+
+.form-control:focus {
+  box-shadow: none;
+}

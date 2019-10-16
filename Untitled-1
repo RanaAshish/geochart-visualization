@@ -1,0 +1,2 @@
+1) You said in point "R6", "A check of the correctness of the data should be conducted – invalid data should be logged and then ignored", so do we need to add log in separate file? or each time user request for data, we idenitfy invalid data and log them?
+2) 

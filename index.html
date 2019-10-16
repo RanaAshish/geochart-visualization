@@ -1,0 +1,75 @@
+<html>
+  <head>
+    <title>Javascript Test</title>
+
+    <!-- CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      rel="stylesheet"
+      crossorigin="anonymous"
+    />
+
+    <!-- Custom CSS -->
+    <link href="geo.css" rel="stylesheet" />
+
+    <!-- External JS-->
+    <script
+      type="text/javascript"
+      src="https://www.gstatic.com/charts/loader.js"
+    ></script>
+
+    <!-- Custom JS -->
+    <script type="text/javascript" src="index.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row mt-5">
+        <div class="col-sm-12 col-md-5">
+          <h1>Location Analysis</h1>
+          <div>
+            <button class="btn btn-primary">Reload Data</button>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-7">
+          <form class="form-inline">
+            <div class="form-group">
+              <label for="aggregationLevel">Aggregation level:</label>
+              <input
+                type="radio"
+                class="form-control"
+                name="aggregationLevel"
+                checked
+              />
+              Total
+              <input
+                type="radio"
+                class="form-control"
+                name="aggregationLevel"
+              />
+              Connections
+            </div>
+            <div class="form-group">
+              <label for="countryRole">Country role:</label>
+              <input
+                type="radio"
+                class="form-control"
+                name="countryRole"
+                checked
+              />
+              Initiating country
+              <input type="radio" class="form-control" name="countryRole" />
+              Receiving country
+            </div>
+            <div class="form-group">
+              <label for="referenceCountry">Reference country:</label>
+              <input type="text" class="form-control" name="referenceCountry" />
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="row">
+        <div id="regions_div" style="width: 900px; height: 500px;"></div>
+      </div>
+    </div>
+  </body>
+</html>
