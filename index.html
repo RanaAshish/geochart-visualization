@@ -27,7 +27,9 @@
         <div class="col-sm-12 col-md-5">
           <h1>Location Analysis</h1>
           <div>
-            <button class="btn btn-primary">Reload Data</button>
+            <button class="btn btn-primary" onClick="reloadData()">
+              Reload Data
+            </button>
           </div>
         </div>
         <div class="col-sm-12 col-md-7">
@@ -38,6 +40,7 @@
                 type="radio"
                 class="form-control"
                 name="aggregationLevel"
+                value="total"
                 checked
               />
               Total
@@ -45,6 +48,7 @@
                 type="radio"
                 class="form-control"
                 name="aggregationLevel"
+                value="connections"
               />
               Connections
             </div>
@@ -54,16 +58,29 @@
                 type="radio"
                 class="form-control"
                 name="countryRole"
+                value="initiating"
                 checked
               />
               Initiating country
-              <input type="radio" class="form-control" name="countryRole" />
+              <input
+                type="radio"
+                class="form-control"
+                name="countryRole"
+                value="receiving"
+              />
               Receiving country
             </div>
             <div class="form-group">
               <label for="referenceCountry">Reference country:</label>
-              <input type="text" class="form-control" name="referenceCountry" />
+              <input
+                type="text"
+                class="form-control"
+                name="referenceCountry"
+                id="referenceCountry"
+                value=""
+              />
             </div>
+            <div class="error d-none">Please enter refernece country</div>
           </form>
         </div>
       </div>

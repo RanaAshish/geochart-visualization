@@ -1,4 +1,12 @@
-console.log("Javascript running");
+const csvFilePath = "dataset.csv";
+let data = [];
+let header = [];
+
+// Take Dataset into variable
+requestCSV(csvFilePath, function(dataset) {
+  // Load map once data received
+  loadGeo(dataset);
+});
 
 // Request CSV File
 function requestCSV(filepath, callback) {
@@ -35,24 +43,70 @@ function CSVAJAX(filepath, callback) {
   this.request.send();
 }
 
-// Take Dataset into variable
-requestCSV("dataset.csv", function(dataset) {
-  loadGeo(dataset);
-  // avg_collaborations_client_country(dataset);
-  // collaborations_client_country(dataset);
-  // max_client_countries(dataset);
-});
+function loadGeo(d) {
+  d.forEach((val, key) => {
+    if (key == 4) {
+      header = val;
+    } else if (key > 4) {
+      data.push(val);
+    }
+  });
 
-function loadGeo(data) {
-  console.log("Data from CSV ==> ", data);
   google.charts.load("current", {
     packages: ["geochart"],
     mapsApiKey: "AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY"
   });
-  google.charts.setOnLoadCallback(drawRegionsMap);
+  google.charts.setOnLoadCallback(reloadData);
+}
 
-  function drawRegionsMap() {
-    var data = google.visualization.arrayToDataTable([
+function reloadData() {
+  console.log("Reload data called");
+
+  let aggregationLevel = document.querySelector(
+    "input[name = aggregationLevel]:checked"
+  ).value;
+
+  let countryRole = document.querySelector("input[name = countryRole]:checked")
+    .value;
+
+  let referenceCountry = document.getElementById("referenceCountry").value;
+  referenceCountry = referenceCountry ? referenceCountry.trim() : "";
+
+  if (aggregationLevel === "connections" && referenceCountry == "") {
+    if (document.querySelector(".error").classList.contains("d-none")) {
+      document.querySelector(".error").classList.remove("d-none");
+      return;
+    }
+  } else if (!document.querySelector(".error").classList.contains("d-none")) {
+    document.querySelector(".error").classList.add("d-none");
+  }
+
+  let chartData = [["country", "Aggregation"]];
+  if (aggregationLevel == "total" && countryRole == "initiating") {
+    // Iterate through data and create new array for chart
+    data.forEach(val => {
+      if (val[0] && !isItemInArray(chartData, val[0])) {
+        if (val[3] != "" || parseInt(val[3]) > 0) {
+          chartData.push([val[0], parseInt(val[3])]);
+        }
+      }
+    });
+
+    // chartData = [
+    //   ["country", "Aggregation"],
+    //   ["Afghanistan", 49],
+    //   ["Albania ", 17],
+    //   ["Algeria", 57],
+    //   ["Andorra", 24],
+    //   ["Angola ", 1],
+    //   ["Anguilla", 40],
+    //   ["Western Sahara", 0],
+    //   ["Yemen", 0],
+    //   ["Zambia", 0],
+    //   ["Zimbabwe", 0]
+    // ];
+  } else {
+    chartData = [
       ["Country", "Aggregation"],
       ["Germany", 200],
       ["United States", 300],
@@ -61,116 +115,26 @@ function loadGeo(data) {
       ["France", 600],
       ["RU", 700],
       ["INDIA", 800]
-    ]);
-
-    var options = {
-      colors: ["#333066"]
-    };
-
-    var chart = new google.visualization.GeoChart(
-      document.getElementById("regions_div")
-    );
-
-    chart.draw(data, options);
+    ];
   }
+
+  var options = {
+    colors: ["#333066"]
+  };
+
+  var chart = new google.visualization.GeoChart(
+    document.getElementById("regions_div")
+  );
+
+  chart.draw(google.visualization.arrayToDataTable(chartData), options);
 }
 
-// AVG_COLLABORATIONS_CLIENT_COUNTRY
-function avg_collaborations_client_country(data) {
-  let header = [];
-  let sum = 0;
-  let counter = 0;
-  data.forEach((val, key) => {
-    if (key == 4) {
-      header = val;
-    } else if (key > 4) {
-      sum = sum + val[header.indexOf("Number collaborations")] * 1;
-      counter = counter + 1;
+// additional supportive functions
+function isItemInArray(array, item) {
+  for (var i = 0; i < array.length; i++) {
+    if (array[i][0] == item) {
+      return true; // Found it
     }
-  });
-  document.getElementById("avg_collaborations_client_country").innerHTML =
-    sum / counter;
-}
-
-function collaborations_client_country(data) {
-  const country = [];
-  let header = [];
-  data.forEach((val, key) => {
-    if (key == 4) {
-      header = val;
-    } else if (key > 4) {
-      const countryName = val[header.indexOf("Client Country")];
-      if (country.indexOf(countryName) === -1) {
-        country[countryName] = {
-          sum: val[header.indexOf("Number collaborations")]
-            ? val[header.indexOf("Number collaborations")] * 1
-            : 0,
-          counter: 1,
-          average: val[header.indexOf("Number collaborations")]
-            ? val[header.indexOf("Number collaborations")] * 1
-            : 0
-        };
-      } else {
-        country[countryName]["sum"] =
-          country[countryName]["sum"] +
-          val[header.indexOf("Number collaborations")];
-        country[countryName]["counter"] = country[countryName]["counter"] + 1;
-        country[countryName]["average"] =
-          country[countryName]["sum"] / country[countryName]["counter"];
-      }
-    }
-  });
-
-  let highest = {};
-  let minimum = {};
-  Object.keys(country).forEach(v => {
-    const val = country[v];
-    if (Object.keys(highest).length > 0) {
-      if (highest.sum < val.sum) {
-        highest = val;
-        highest["country"] = v;
-      }
-    } else {
-      highest = val;
-      highest["country"] = v;
-    }
-    if (Object.keys(minimum).length > 0) {
-      if (minimum.sum > val.sum) {
-        minimum = val;
-        minimum["country"] = v;
-      }
-    } else {
-      minimum = val;
-      minimum["country"] = v;
-    }
-  });
-
-  document.getElementById("max_collaborations_client_country").innerHTML =
-    highest.country + " ==> " + highest.sum;
-  document.getElementById("min_collaborations_client_country").innerHTML =
-    minimum.country + " ==> " + minimum.sum;
-}
-
-function max_client_countries(data) {
-  const country = [];
-  let header = [];
-  data.forEach((val, key) => {
-    if (key == 4) {
-      header = val;
-    } else if (key > 4) {
-      const countryName = val[header.indexOf("Client Country")];
-      const providerCountry = val[header.indexOf("Provider Country")];
-      if (country.indexOf(countryName) === -1) {
-        country[countryName] = [];
-        country[countryName][providerCountry] = [];
-        country[countryName][providerCountry]["counter"] = 1;
-        country[countryName][providerCountry].push(val);
-      } else {
-        country[countryName][providerCountry].push(val);
-        country[countryName][providerCountry]["counter"] += 1;
-      }
-    }
-  });
-
-  console.log("Max ==> ", country);
+  }
+  return false; // Not found
 }

@@ -9,3 +9,8 @@
 .form-control:focus {
   box-shadow: none;
 }
+
+.error {
+  color: red;
+  padding-left: 8px;
+}
