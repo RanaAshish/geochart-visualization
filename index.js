@@ -91,20 +91,43 @@ function reloadData() {
         }
       }
     });
-
-    // chartData = [
-    //   ["country", "Aggregation"],
-    //   ["Afghanistan", 49],
-    //   ["Albania ", 17],
-    //   ["Algeria", 57],
-    //   ["Andorra", 24],
-    //   ["Angola ", 1],
-    //   ["Anguilla", 40],
-    //   ["Western Sahara", 0],
-    //   ["Yemen", 0],
-    //   ["Zambia", 0],
-    //   ["Zimbabwe", 0]
-    // ];
+  } else if (aggregationLevel == "total" && countryRole == "receiving") {
+    // Iterate through data and create new array for chart
+    data.forEach(val => {
+      if (val[1] && !isItemInArray(chartData, val[1])) {
+        if (val[5] != "" || parseInt(val[5]) > 0) {
+          chartData.push([val[1], parseInt(val[5])]);
+        }
+      }
+    });
+  } else if (aggregationLevel == "connections" && countryRole == "receiving") {
+    // Iterate through data and create new array for chart
+    data.forEach(val => {
+      if (
+        val[0] &&
+        val[1] &&
+        val[1] == referenceCountry &&
+        !isItemInArray(chartData, val[0])
+      ) {
+        if (val[2] != "" || parseInt(val[2]) > 0) {
+          chartData.push([val[0], parseInt(val[2])]);
+        }
+      }
+    });
+  } else if (aggregationLevel == "connections" && countryRole == "initiating") {
+    // Iterate through data and create new array for chart
+    data.forEach(val => {
+      if (
+        val[0] &&
+        val[1] &&
+        val[0] == referenceCountry &&
+        !isItemInArray(chartData, val[1])
+      ) {
+        if (val[2] != "" || parseInt(val[2]) > 0) {
+          chartData.push([val[1], parseInt(val[2])]);
+        }
+      }
+    });
   } else {
     chartData = [
       ["Country", "Aggregation"],
@@ -126,7 +149,11 @@ function reloadData() {
     document.getElementById("regions_div")
   );
 
+  console.log("Chart Data ==> ", chartData);
+
   chart.draw(google.visualization.arrayToDataTable(chartData), options);
+
+  chart.setSelection(["INDIA"]);
 }
 
 // additional supportive functions
