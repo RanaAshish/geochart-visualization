@@ -33,7 +33,7 @@
           </div>
         </div>
         <div class="col-sm-12 col-md-7">
-          <form class="form-inline">
+          <form class="form-inline" onsubmit="changeEvent();return false;">
             <div class="form-group">
               <label for="aggregationLevel">Aggregation level:</label>
               <input
@@ -41,6 +41,7 @@
                 class="form-control"
                 name="aggregationLevel"
                 value="total"
+                onchange="changeEvent()"
                 checked
               />
               Total
@@ -49,6 +50,7 @@
                 class="form-control"
                 name="aggregationLevel"
                 value="connections"
+                onchange="changeEvent()"
               />
               Connections
             </div>
@@ -59,6 +61,7 @@
                 class="form-control"
                 name="countryRole"
                 value="initiating"
+                onchange="changeEvent()"
                 checked
               />
               Initiating country
@@ -67,20 +70,23 @@
                 class="form-control"
                 name="countryRole"
                 value="receiving"
+                onchange="changeEvent()"
               />
               Receiving country
             </div>
-            <div class="form-group">
-              <label for="referenceCountry">Reference country:</label>
-              <input
-                type="text"
-                class="form-control"
-                name="referenceCountry"
-                id="referenceCountry"
-                value=""
-              />
+            <div id="referenceCountryWrapper" class="d-none">
+              <div class="form-group">
+                <label for="referenceCountry">Reference country:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="referenceCountry"
+                  id="referenceCountry"
+                  value=""
+                />
+              </div>
+              <div class="error d-none">Please enter refernece country</div>
             </div>
-            <div class="error d-none">Please enter refernece country</div>
           </form>
         </div>
       </div>

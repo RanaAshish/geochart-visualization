@@ -8,6 +8,55 @@ requestCSV(csvFilePath, function(dataset) {
   loadGeo(dataset);
 });
 
+function changeEvent() {
+  // debugger;
+  let aggregationLevel = document.querySelector(
+    "input[name = aggregationLevel]:checked"
+  ).value;
+
+  if (aggregationLevel == "total") {
+    // Hide reference country
+    if (
+      !document
+        .getElementById("referenceCountryWrapper")
+        .classList.contains("d-none")
+    ) {
+      document
+        .getElementById("referenceCountryWrapper")
+        .classList.add("d-none");
+    }
+  } else {
+    // Show reference country
+    if (
+      document
+        .getElementById("referenceCountryWrapper")
+        .classList.contains("d-none")
+    ) {
+      document
+        .getElementById("referenceCountryWrapper")
+        .classList.remove("d-none");
+    }
+
+    let referenceCountry = document.getElementById("referenceCountry").value;
+    referenceCountry = referenceCountry ? referenceCountry.trim() : "";
+
+    if (referenceCountry == "") {
+      if (document.querySelector(".error").classList.contains("d-none")) {
+        document.querySelector(".error").classList.remove("d-none");
+      }
+      return;
+    } else if (!document.querySelector(".error").classList.contains("d-none")) {
+      document.querySelector(".error").classList.add("d-none");
+    }
+  }
+  reloadData();
+}
+
+function formSubmit(e) {
+  changeEvent();
+  return false;
+}
+
 // Request CSV File
 function requestCSV(filepath, callback) {
   return new CSVAJAX(filepath, callback);
@@ -60,8 +109,6 @@ function loadGeo(d) {
 }
 
 function reloadData() {
-  console.log("Reload data called");
-
   let aggregationLevel = document.querySelector(
     "input[name = aggregationLevel]:checked"
   ).value;
@@ -149,11 +196,11 @@ function reloadData() {
     document.getElementById("regions_div")
   );
 
-  console.log("Chart Data ==> ", chartData);
-
   chart.draw(google.visualization.arrayToDataTable(chartData), options);
 
-  chart.setSelection(["INDIA"]);
+  // google.visualization.events.addListener(chart, "regionClick", function(d) {
+  //   console.log("Listner called : ", d);
+  // });
 }
 
 // additional supportive functions
