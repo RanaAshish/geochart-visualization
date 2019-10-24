@@ -1,6 +1,7 @@
 const csvFilePath = "dataset.csv";
 let data = [];
 let header = [];
+let country = [];
 
 // Take Dataset into variable
 requestCSV(csvFilePath, function(dataset) {
@@ -52,11 +53,6 @@ function changeEvent() {
   reloadData();
 }
 
-function formSubmit(e) {
-  changeEvent();
-  return false;
-}
-
 // Request CSV File
 function requestCSV(filepath, callback) {
   return new CSVAJAX(filepath, callback);
@@ -97,9 +93,20 @@ function loadGeo(d) {
     if (key == 4) {
       header = val;
     } else if (key > 4) {
+      if (val[0] != "" && country.indexOf(val[0].trim()) === -1) {
+        country.push(val[0].trim());
+      }
+      if (val[1] != "" && country.indexOf(val[1].trim()) === -1) {
+        country.push(val[1].trim());
+      }
       data.push(val);
     }
   });
+
+  country.sort();
+  // Enable Autocomplete
+  autocomplete(document.getElementById("referenceCountry"), country);
+  console.log("Country ==> ", country);
 
   google.charts.load("current", {
     packages: ["geochart"],

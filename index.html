@@ -20,6 +20,7 @@
 
     <!-- Custom JS -->
     <script type="text/javascript" src="index.js"></script>
+    <script type="text/javascript" src="autocomplete.js"></script>
   </head>
   <body>
     <div class="container">
@@ -77,13 +78,16 @@
             <div id="referenceCountryWrapper" class="d-none">
               <div class="form-group">
                 <label for="referenceCountry">Reference country:</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="referenceCountry"
-                  id="referenceCountry"
-                  value=""
-                />
+                <div class="autocomplete">
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="referenceCountry"
+                    id="referenceCountry"
+                    value=""
+                    autocomplete="off"
+                  />
+                </div>
               </div>
               <div class="error d-none">Please enter refernece country</div>
             </div>
