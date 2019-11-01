@@ -38,6 +38,7 @@ function autocomplete(inp, arr) {
           /*close the list of autocompleted values,
                 (or any other open lists of autocompleted values:*/
           closeAllLists();
+          reloadData();
         });
         a.appendChild(b);
       }

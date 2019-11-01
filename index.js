@@ -3,11 +3,12 @@ let data = [];
 let header = [];
 let country = [];
 
+loadGeo([]);
 // Take Dataset into variable
-requestCSV(csvFilePath, function(dataset) {
-  // Load map once data received
-  loadGeo(dataset);
-});
+// requestCSV(csvFilePath, function(dataset) {
+//   // Load map once data received
+//   loadGeo(dataset);
+// });
 
 function changeEvent() {
   // debugger;
@@ -104,8 +105,9 @@ function loadGeo(d) {
   });
 
   country.sort();
-  // Enable Autocomplete
-  autocomplete(document.getElementById("referenceCountry"), country);
+  if (country && country.length > 0)
+    // Enable Autocomplete
+    autocomplete(document.getElementById("referenceCountry"), country);
   console.log("Country ==> ", country);
 
   google.charts.load("current", {
@@ -218,4 +220,43 @@ function isItemInArray(array, item) {
     }
   }
   return false; // Not found
+}
+
+function init() {
+  document
+    .getElementById("fileInput")
+    .addEventListener("change", handleFileSelect, false);
+}
+
+function handleFileSelect(event) {
+  console.log("handleFileSelect => ", event.target.files[0]["type"]);
+  if (
+    event.target.files &&
+    event.target.files[0] &&
+    event.target.files[0]["type"] == "text/csv"
+  ) {
+    const reader = new FileReader();
+    reader.onload = handleFileLoad;
+    reader.readAsText(event.target.files[0]);
+  } else {
+    alert("Please select valid CSV file");
+  }
+}
+
+function handleFileLoad(event) {
+  console.log("handleFileLoad => ", event);
+
+  var dataset = event.target.result.split("\n"); /*1st separator*/
+  var i = dataset.length;
+
+  // Split CSV and store all column value in array
+  while (i--) {
+    if (dataset[i] !== "") {
+      dataset[i] = dataset[i].split(";"); /*2nd separator*/
+    } else {
+      dataset.splice(i, 1);
+    }
+  }
+
+  loadGeo(dataset);
 }
