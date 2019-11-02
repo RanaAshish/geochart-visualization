@@ -1,17 +1,62 @@
-const csvFilePath = "dataset.csv";
+// const csvFilePath = "dataset.csv";
 let data = [];
 let header = [];
 let country = [];
 
+// Load initially empty map
 loadGeo([]);
-// Take Dataset into variable
-// requestCSV(csvFilePath, function(dataset) {
-//   // Load map once data received
-//   loadGeo(dataset);
-// });
 
+/*
+
+// ---- Code need to uncomment if CSV file need to read from server ----- 
+
+// Take Dataset into variable
+requestCSV(csvFilePath, function(dataset) {
+  // Load map once data received
+  loadGeo(dataset);
+});
+
+// Request CSV File
+function requestCSV(filepath, callback) {
+  return new CSVAJAX(filepath, callback);
+}
+
+// Call CSV file via AJAX
+function CSVAJAX(filepath, callback) {
+  this.request = new XMLHttpRequest();
+  this.request.timeout = 10000;
+  this.request.open("GET", filepath, true);
+  this.request.parent = this;
+  this.callback = callback;
+
+  this.request.onload = function() {
+    // Calculate total row
+    var dataset = this.response.split("\n"); // 1st separator
+    var i = dataset.length;
+
+    // Split CSV and store all column value in array
+    while (i--) {
+      if (dataset[i] !== "") {
+        dataset[i] = dataset[i].split(";"); // 2nd separator
+      } else {
+        dataset.splice(i, 1);
+      }
+    }
+    this.parent.response = dataset;
+
+    if (typeof this.parent.callback !== "undefined") {
+      this.parent.callback(dataset);
+    }
+  };
+  this.request.send();
+}
+
+---- Code commenting ends here for CSV file read through AJAX -----
+
+*/
+
+// Toggle events of radio button
 function changeEvent() {
-  // debugger;
   let aggregationLevel = document.querySelector(
     "input[name = aggregationLevel]:checked"
   ).value;
@@ -52,41 +97,6 @@ function changeEvent() {
     }
   }
   reloadData();
-}
-
-// Request CSV File
-function requestCSV(filepath, callback) {
-  return new CSVAJAX(filepath, callback);
-}
-
-// Call CSV file via AJAX
-function CSVAJAX(filepath, callback) {
-  this.request = new XMLHttpRequest();
-  this.request.timeout = 10000;
-  this.request.open("GET", filepath, true);
-  this.request.parent = this;
-  this.callback = callback;
-
-  this.request.onload = function() {
-    // Calculate total row
-    var dataset = this.response.split("\n"); /*1st separator*/
-    var i = dataset.length;
-
-    // Split CSV and store all column value in array
-    while (i--) {
-      if (dataset[i] !== "") {
-        dataset[i] = dataset[i].split(";"); /*2nd separator*/
-      } else {
-        dataset.splice(i, 1);
-      }
-    }
-    this.parent.response = dataset;
-
-    if (typeof this.parent.callback !== "undefined") {
-      this.parent.callback(dataset);
-    }
-  };
-  this.request.send();
 }
 
 function loadGeo(d) {
@@ -222,6 +232,7 @@ function isItemInArray(array, item) {
   return false; // Not found
 }
 
+// Handle file change event
 function init() {
   document
     .getElementById("fileInput")
@@ -229,7 +240,6 @@ function init() {
 }
 
 function handleFileSelect(event) {
-  console.log("handleFileSelect => ", event.target.files[0]["type"]);
   if (
     event.target.files &&
     event.target.files[0] &&
@@ -244,8 +254,6 @@ function handleFileSelect(event) {
 }
 
 function handleFileLoad(event) {
-  console.log("handleFileLoad => ", event);
-
   var dataset = event.target.result.split("\n"); /*1st separator*/
   var i = dataset.length;
 
